@@ -26,6 +26,7 @@ function Landing() {
             <img src="avatar.png" alt="Evo" width={200} />
             <h2>The AI that evolves in real-time</h2>
             <button onClick={() => navigate("/dojo")}>Enter Dojo</button>
+            <button onClick={() => navigate("/evo-net")}>Evo-Net</button>  {/* New Button */}
           </section>
         </header>
       </div>

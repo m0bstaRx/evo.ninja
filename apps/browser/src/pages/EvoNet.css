@@ -1,0 +1,58 @@
+.Logo {
+    width: 30%;
+    margin-bottom: 20px;
+  }
+  
+  .evo-net-background {
+    background-color: black;
+    color: white;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .evo-net-container {
+    border: 1px solid #ff572e;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+
+  
+  .leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+  
+  .leaderboard-table th,
+  .leaderboard-table td {
+    border: 1px solid #ff572e;
+    text-align: center;
+    padding: 8px;
+  }
+  
+  .script-requests {
+    list-style: none;
+    margin-top: 20px;
+  }
+  
+  .script-requests li {
+    margin: 10px 0;
+    border: 1px solid #ff572e;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px;
+  }
+  
+  .script-requests button {
+    background-color: #ff572e;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 10px;
+  }
+  
