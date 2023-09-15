@@ -9,7 +9,7 @@ import {
   shimCode,
   Logger,
   ConsoleLogger
-} from "@evo-ninja/core";
+} from "@evo-ninja/evo-agent";
 import fs from "fs";
 import path from "path-browserify";
 
