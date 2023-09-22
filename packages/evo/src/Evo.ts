@@ -1,4 +1,5 @@
 import { agentFunctions } from "./agent-functions";
+import { agentPlugin } from "./agent-plugin";
 import { AgentContext } from "./AgentContext";
 import { Scripts } from "./Scripts";
 import { WrapClient } from "./wrap";
@@ -14,7 +15,7 @@ import {
   LlmApi,
   Chat,
   Logger,
-  StepOutput,
+  AgentOutput,
   RunResult,
   Timeout,
   InMemoryWorkspace,
@@ -22,18 +23,16 @@ import {
   basicFunctionCallLoop
 } from "@evo-ninja/agent-utils";
 import { ScriptWriter } from "@evo-ninja/js-script-writer-agent";
-import { IWrapPackage } from "@polywrap/client-js";
 import { ResultErr } from "@polywrap/result";
 
 export class Evo implements Agent {
-  private readonly context: AgentContext
+  private readonly context: AgentContext;
 
   constructor(
     private readonly llm: LlmApi,
     private readonly chat: Chat,
     private readonly logger: Logger,
     private readonly workspace: Workspace,
-    private readonly agentPackage: IWrapPackage,
     scripts: Scripts,
     private readonly timeout?: Timeout
   ) {
@@ -47,12 +46,12 @@ export class Evo implements Agent {
       client: new WrapClient(
         this.workspace,
         this.logger,
-        this.agentPackage
+        agentPlugin({ logger: this.logger })
       ),
     };
   }
 
-  public async* run(goal: string): AsyncGenerator<StepOutput, RunResult, string | undefined> {
+  public async* run(goal: string): AsyncGenerator<AgentOutput, RunResult, string | undefined> {
     const { chat } = this.context;
     const createScriptWriter = (): ScriptWriter => {
       const workspace = new InMemoryWorkspace();
@@ -67,11 +66,19 @@ export class Evo implements Agent {
     try {
       chat.persistent("system", INITIAL_PROMP);
       chat.persistent("system", GOAL_PROMPT(goal));
-      
+
       return yield* basicFunctionCallLoop(
         this.context,
         executeAgentFunction,
         agentFunctions(createScriptWriter),
+        (functionCalled) => {
+          const namespace = functionCalled.args.namespace || "";
+          const terminationFunctions = [
+            `agent.onGoalAchieved`,
+            `agent.onGoalFailed`
+          ];
+          return terminationFunctions.includes(namespace);
+        },
         LOOP_PREVENTION_PROMPT
       );
     } catch (err) {

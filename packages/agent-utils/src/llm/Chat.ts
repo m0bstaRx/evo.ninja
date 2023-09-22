@@ -3,10 +3,10 @@ import { Workspace, Logger } from "../sys";
 
 import {
   ChatCompletionRequestMessageRoleEnum,
-  ChatCompletionRequestMessage as Message
+  ChatCompletionRequestMessage as ChatMessage
 } from "openai";
 
-export { Message };
+export { ChatMessage };
 
 export type MessageType =
   | "persistent"
@@ -14,11 +14,15 @@ export type MessageType =
 
 interface MessageLog {
   tokens: number;
-  msgs: Message[];
+  msgs: ChatMessage[];
 }
 
+export type ChatRole = ChatCompletionRequestMessageRoleEnum;
+
+export type ChatMessageLog = Record<MessageType, MessageLog>;
+
 export class Chat {
-  private _msgLogs: Record<MessageType, MessageLog> = {
+  private _msgLogs: ChatMessageLog = {
     "persistent": {
       tokens: 0,
       msgs: []
@@ -54,11 +58,16 @@ export class Chat {
     );
   }
 
+  get tokens(): number {
+    return this._msgLogs["persistent"].tokens +
+      this._msgLogs["temporary"].tokens;
+  }
+
   get tokenizer(): Tokenizer {
     return this._tokenizer;
   }
 
-  get messages(): Message[] {
+  get messages(): ChatMessage[] {
     return [
       ...this._msgLogs["persistent"].msgs,
       ...this._msgLogs["temporary"].msgs
@@ -67,7 +76,7 @@ export class Chat {
 
   public add(
     type: MessageType,
-    msg: Message | Message[]
+    msg: ChatMessage | ChatMessage[]
   ) {
     const msgLog = this._msgLogs[type];
     let msgs = Array.isArray(msg) ? msg : [msg];
@@ -91,7 +100,7 @@ export class Chat {
   }
 
   public persistent(
-    role: ChatCompletionRequestMessageRoleEnum,
+    role: ChatRole,
     content: string
   ): string {
     this.add("persistent", { role, content });
@@ -99,22 +108,22 @@ export class Chat {
   }
 
   public temporary(
-    role: ChatCompletionRequestMessageRoleEnum,
-    content: string
+    role: ChatRole,
+    content?: string
   ): string | undefined;
   public temporary(
-    msg: Message
+    msg: ChatMessage
   ): string | undefined;
   public temporary(
-    roleOrMsg: ChatCompletionRequestMessageRoleEnum | Message,
+    roleOrMsg: ChatRole | ChatMessage,
     content?: string
   ): string | undefined {
     switch(typeof roleOrMsg) {
       case "string":
-        this.add("temporary", { role: roleOrMsg as ChatCompletionRequestMessageRoleEnum, content });
+        this.add("temporary", { role: roleOrMsg as ChatRole, content });
         return content;
       case "object":
-        this.add("temporary", roleOrMsg as Message);
+        this.add("temporary", roleOrMsg as ChatMessage);
         return roleOrMsg.content;
       default:
         throw new Error(`Invalid type for roleOrMsg: ${typeof roleOrMsg}`);
@@ -122,21 +131,16 @@ export class Chat {
   }
 
   public async fitToContextWindow(): Promise<void> {
-    const msgLogs = this._msgLogs;
-    const totalTokens = () =>
-      msgLogs["persistent"].tokens +
-      msgLogs["temporary"].tokens;
-
-    if (totalTokens() < this._maxContextTokens) {
+    if (this.tokens < this._maxContextTokens) {
       return;
     }
 
-    this._logger.error(`! Max Tokens Exceeded (${totalTokens()} / ${this._maxContextTokens})`);
+    this._logger.error(`! Max Tokens Exceeded (${this.tokens} / ${this._maxContextTokens})`);
 
     // Start with "temporary" messages
     await this._summarize("temporary");
 
-    if (totalTokens() < this._maxContextTokens) {
+    if (this.tokens < this._maxContextTokens) {
       return;
     }
 
@@ -144,7 +148,19 @@ export class Chat {
     await this._summarize("persistent");
   }
 
-  private _chunk(msg: Message): MessageLog {
+  public export(): ChatMessageLog {
+    return JSON.parse(JSON.stringify(this._msgLogs));
+  }
+
+  public toString() {
+    return JSON.stringify(this, null, 2);
+  }
+
+  public toJSON() {
+    return this._msgLogs;
+  }
+
+  private _chunk(msg: ChatMessage): MessageLog {
     const chunks: MessageLog = {
       tokens: 0,
       msgs: []
@@ -172,7 +188,7 @@ export class Chat {
   private _save() {
     this._workspace.writeFileSync(
       this._msgsFile,
-      JSON.stringify(this._msgLogs, null, 2)
+      this.toString()
     );
   }
 
@@ -196,16 +212,16 @@ export class Chat {
   }
 
   private async _summarizeMessages(
-    msgs: Message[]
-  ): Promise<Message | undefined> {
-    let result: Message | undefined;
+    msgs: ChatMessage[]
+  ): Promise<ChatMessage | undefined> {
+    let result: ChatMessage | undefined;
     let queue = msgs;
 
     // While we still have more than 1 message to summarize
     while (queue.length > 1) {
       // Aggregate as many messages as possible,
       // based on max size of the context window
-      const toSummarize: Message[] = [];
+      const toSummarize: ChatMessage[] = [];
       let tokenCounter = 0;
       let index = 0;
 

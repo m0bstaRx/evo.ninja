@@ -1,29 +1,39 @@
-import { Result, ResultErr, ResultOk } from "@polywrap/result";
 import {
   FUNCTION_NOT_FOUND,
   UNDEFINED_FUNCTION_ARGS,
   UNDEFINED_FUNCTION_NAME,
   UNPARSABLE_FUNCTION_ARGS,
 } from "./prompts";
+
+import { Result, ResultErr, ResultOk } from "@polywrap/result";
+import { ChatCompletionFunctions } from "openai";
 import JSON5 from "json5";
+import { AgentOutput } from "./AgentOutput";
+import { ChatMessage } from "../llm";
 
-export type AgentFunctionResult = Result<string, any>; 
+export type AgentFunctionDefinition = ChatCompletionFunctions;
 
-export interface AgentChatMessage {
-  type: "success" | "error" | "info" | "warning",
-  title: string,
-  content?: string,
-}
+export type AgentFunctionResult = {
+  outputs: AgentOutput[];
+  messages: ChatMessage[];
+}; 
 
 export interface AgentFunction<TContext> {
-  definition: any;
-  buildChatMessage(args: any, result: AgentFunctionResult): AgentChatMessage;
+  definition: AgentFunctionDefinition;
   buildExecutor(
     context: TContext
-  ): (options: any) => Promise<any>;
+  ): (options: any) => Promise<Result<AgentFunctionResult, string>>;
 }
 
-export type ExecuteAgentFunctionResult = Result<AgentChatMessage, string>;
+export interface ExecuteAgentFunctionCalled {
+  name: string;
+  args: any;
+}
+
+export interface ExecuteAgentFunctionResult {
+  functionCalled?: ExecuteAgentFunctionCalled;
+  result: Result<AgentFunctionResult, string>;
+}
 
 export type ExecuteAgentFunction = <TContext>(
   name: string | undefined,
@@ -41,7 +51,9 @@ export const executeAgentFunction: ExecuteAgentFunction = async <TContext>(
   const parseResult = processFunctionAndArgs(name, args, agentFunctions);
 
   if (!parseResult.ok) {
-    return ResultErr(parseResult.error);
+    return {
+      result: ResultErr(parseResult.error)
+    };
   }
 
   const [fnArgs, func] = parseResult.value;
@@ -49,11 +61,13 @@ export const executeAgentFunction: ExecuteAgentFunction = async <TContext>(
   const executor = func.buildExecutor(context);
   const result = await executor(fnArgs);
 
-  if (!result.ok) {
-    return ResultErr(result.error.message)
-  }
-
-  return ResultOk(func.buildChatMessage(fnArgs, result));
+  return {
+    result,
+    functionCalled: {
+      name: func.definition.name,
+      args: fnArgs
+    },
+  };
 }
 
 function processFunctionAndArgs<TContext>(

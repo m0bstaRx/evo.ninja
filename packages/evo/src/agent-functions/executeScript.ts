@@ -1,11 +1,65 @@
 import JSON5 from "json5";
-import { ResultErr, ResultOk } from "@polywrap/result";
-import { AgentChatMessage, AgentFunction, AgentFunctionResult } from "@evo-ninja/agent-utils";
+import { Result, ResultErr, ResultOk } from "@polywrap/result";
+import { AgentFunction, AgentFunctionResult, FunctionCallMessage } from "@evo-ninja/agent-utils";
 import { AgentContext } from "../AgentContext";
 import { EXECUTE_SCRIPT_OUTPUT, FUNCTION_CALL_FAILED } from "../prompts";
-import { JsEngine_GlobalVar, JsEngine_Module, shimCode } from "../wrap";
+import { JsEngine_GlobalVar, JsEngine, shimCode } from "../wrap";
 
 const FN_NAME = "executeScript";
+type FuncParameters = { 
+  namespace: string, 
+  description: string, 
+  arguments: string,
+  result: string
+};
+
+const SUCCESS = (scriptName: string, result: any, params: FuncParameters): AgentFunctionResult => ({
+  outputs: [
+    {
+      type: "success",
+      title: `Executed '${scriptName}' script.`,
+      content: 
+        `## Function Call:\n\`\`\`javascript\n${FN_NAME}(${JSON.stringify(params, null, 2)})\n\`\`\`\n` +
+        EXECUTE_SCRIPT_OUTPUT(params.result, result),
+    }
+  ],
+  messages: [
+    new FunctionCallMessage(FN_NAME, params),
+    {
+      role: "system",
+      content: `## Function Call:\n\`\`\`javascript\n${FN_NAME}(${JSON.stringify(params, null, 2)})\n\`\`\`\n` +
+        EXECUTE_SCRIPT_OUTPUT(params.result, result),
+    },
+  ]
+});
+const EXECUTE_SCRIPT_ERROR_RESULT = (scriptName: string, error: string | undefined, params: FuncParameters): AgentFunctionResult => ({
+  outputs: [
+    {
+      type: "success",
+      title: `'${scriptName}' script failed to execute!`,
+      content: FUNCTION_CALL_FAILED(FN_NAME, error ?? "Unknown error", params),
+    }
+  ],
+  messages: [
+    {
+      role: "assistant",
+      content: "",
+      function_call: {
+        name: FN_NAME,
+        arguments: JSON.stringify(params)
+      },
+    },
+    {
+      role: "system",
+      content: FUNCTION_CALL_FAILED(FN_NAME, error ?? "Unknown error", params),
+    },
+  ]
+});
+
+const INVALID_EXECUTE_SCRIPT_ARGS = (
+  params: FuncParameters
+) => `Invalid arguments provided for script ${params.namespace}: '${params.arguments ?? ""}' is not valid JSON!`;
+const SCRIPT_NOT_FOUND = (params: FuncParameters) => `Script '${params.namespace}' not found!`;
 
 export const executeScript: AgentFunction<AgentContext> = {
   definition: {
@@ -27,41 +81,24 @@ export const executeScript: AgentFunction<AgentContext> = {
           description: "The name of the variable to store the result of the script"
         }
       },
-      required: ["name", "arguments", "result"],
+      required: ["namespace", "arguments", "result"],
       additionalProperties: false
     },
   },
-  buildChatMessage(args: any, result: AgentFunctionResult): AgentChatMessage {
-    const argsStr = JSON.stringify(args, null, 2);
-
-    return result.ok
-      ? {
-          type: "success",
-          title: `Executed '${args.namespace}' script.`,
-          content: 
-            `## Function Call:\n\`\`\`javascript\n${FN_NAME}(${argsStr})\n\`\`\`\n` +
-            EXECUTE_SCRIPT_OUTPUT(args.result, result.value),
-        }
-      : {
-          type: "error",
-          title: `'${args.namespace}' script failed to execute!`,
-          content: FUNCTION_CALL_FAILED(FN_NAME, result.error, args),
-        };
-  },
   buildExecutor(context: AgentContext) {
-    return async (options: { namespace: string, arguments: any, result: string }): Promise<AgentFunctionResult> => {
+    return async (params: FuncParameters): Promise<Result<AgentFunctionResult, string>> => {
       try {
-        const script = context.scripts.getScriptByName(options.namespace);
+        const script = context.scripts.getScriptByName(params.namespace);
 
         if (!script) {
-          return ResultErr(`Script ${options.namespace} not found.`);
+          return ResultOk(EXECUTE_SCRIPT_ERROR_RESULT(params.namespace, SCRIPT_NOT_FOUND(params), params));
         }
 
         let args: any = undefined;
-        args = options.arguments ? options.arguments.replace(/\{\{/g, "\\{\\{").replace(/\}\}/g, "\\}\\}") : "{}";
+        args = params.arguments ? params.arguments.replace(/\{\{/g, "\\{\\{").replace(/\}\}/g, "\\}\\}") : "{}";
         try {
 
-          args = JSON5.parse(options.arguments);
+          args = JSON5.parse(params.arguments);
 
           if (args) {
             const replaceVars = (str: string, vars: any) => {
@@ -81,7 +118,7 @@ export const executeScript: AgentFunction<AgentContext> = {
             }
           }
         } catch {
-          return ResultErr(`Invalid arguments provided for script ${options.namespace}: '${options.arguments ?? ""}' is not valid JSON!`);
+          return ResultOk(EXECUTE_SCRIPT_ERROR_RESULT(params.namespace, INVALID_EXECUTE_SCRIPT_ARGS(params), params));
         }
 
         const globals: JsEngine_GlobalVar[] =
@@ -92,23 +129,25 @@ export const executeScript: AgentFunction<AgentContext> = {
             })
           );
 
-        const result = await JsEngine_Module.evalWithGlobals({
+        const jsEngine = new JsEngine(context.client);
+        const result = await jsEngine.evalWithGlobals({
           src: shimCode(script.code),
           globals
-        }, context.client);
+        });
 
         if (result.ok && context.client.jsPromiseOutput.ok) {
-          context.globals[options.result] =
+          context.globals[params.result] =
             JSON.stringify(context.client.jsPromiseOutput.value);
         }
 
         return result.ok
           ? result.value.error == null
             ? context.client.jsPromiseOutput.ok
-              ? ResultOk(JSON.stringify(context.client.jsPromiseOutput.value))
-              : ResultErr(context.client.jsPromiseOutput.error)
-            : ResultErr(result.value.error)
-          : ResultErr(result.error?.toString() ?? "");
+              ? ResultOk(SUCCESS(params.namespace, context.client.jsPromiseOutput.value, params))
+              : ResultOk(SUCCESS(params.namespace, context.client.jsPromiseOutput.error, params))
+            : ResultOk(EXECUTE_SCRIPT_ERROR_RESULT(params.namespace, result.value.error, params))
+          : ResultOk(EXECUTE_SCRIPT_ERROR_RESULT(params.namespace, result.error?.toString(), params));
+      
       } catch (e: any) {
         return ResultErr(e);
       }
