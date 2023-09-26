@@ -18,9 +18,9 @@ const SUCCESS = (params: FuncParameters, candidates: Script[]): AgentFunctionRes
       content: FUNCTION_CALL_SUCCESS_CONTENT(
         FN_NAME,
         params,
-        `Found the following results for script '${params.namespace}'` + 
-        `\n--------------\n` + 
-        `${candidates.map((c) => `Namespace: ${c.name}\nArguments: ${c.arguments}\nDescription: ${c.description}`).join("\n--------------\n")}\n` +
+        `Found result for script '${params.namespace}'` +
+        `\n--------------\n` +
+        `Namespace: ${candidates[0].name}\nArguments: ${candidates[0].arguments}\nDescription: ${candidates[0].description}` +
         `\n--------------\n`
       )
     }
@@ -28,8 +28,8 @@ const SUCCESS = (params: FuncParameters, candidates: Script[]): AgentFunctionRes
   messages: [
     ChatMessageBuilder.functionCall(FN_NAME, params),
     ChatMessageBuilder.system(
-      `Found the following results for script '${params.namespace}'\n` + 
-      `${candidates.map((c) => `Namespace: ${c.name}\nArguments: ${c.arguments}\nDescription: ${c.description}`).join("\n--------------\n")}\n` +
+      `Found result for script '${params.namespace}'\n` +
+      `Namespace: ${candidates[0].name}\nArguments: ${candidates[0].arguments}\nDescription: ${candidates[0].description}` +
       `\`\`\``
     ),
   ]
