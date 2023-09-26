@@ -1,0 +1,234 @@
+{
+  "goal": {
+    "prompt": "Write the word 'Washington' to a .txt file",
+    "time": "00:00:49",
+    "tokens": 818,
+    "llmReqs": 4
+  },
+  "steps": [
+    {
+      "time": "00:00:05",
+      "llmReqs": [
+        {
+          "time": "00:00:05",
+          "tokens": 136,
+          "chat": {
+            "persistent": {
+              "tokens": 136,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that executes scripts to accomplish goals.\nYou can search for new scripts using the findScript function.\nIf you can not find a script that matches your needs you can create one with the createScript function.\nYou can execute scripts using the executeScript function.\nWhen executing scripts use named arguments with TypeScript syntax.\nYou can use the executeScript function to execute agent.speak script to inform the user of anything noteworthy.\nOnce you have achieved the goal, use executeScript function to execute agent.onGoalAchieved script.\nIf you can not achieve the goal, use executeScript function to execute agent.onGoalFailed script.\n"
+                },
+                {
+                  "role": "user",
+                  "content": "Write the word 'Washington' to a .txt file"
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 0,
+              "msgs": []
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "findScript",
+              "arguments": "{\n  \"namespace\": \"fs.writeFile\",\n  \"description\": \"write to a file\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "time": "00:00:20",
+      "llmReqs": [
+        {
+          "time": "00:00:19",
+          "tokens": 208,
+          "chat": {
+            "persistent": {
+              "tokens": 136,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that executes scripts to accomplish goals.\nYou can search for new scripts using the findScript function.\nIf you can not find a script that matches your needs you can create one with the createScript function.\nYou can execute scripts using the executeScript function.\nWhen executing scripts use named arguments with TypeScript syntax.\nYou can use the executeScript function to execute agent.speak script to inform the user of anything noteworthy.\nOnce you have achieved the goal, use executeScript function to execute agent.onGoalAchieved script.\nIf you can not achieve the goal, use executeScript function to execute agent.onGoalFailed script.\n"
+                },
+                {
+                  "role": "user",
+                  "content": "Write the word 'Washington' to a .txt file"
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 72,
+              "msgs": [
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "findScript",
+                    "arguments": "{\"namespace\":\"fs.writeFile\",\"description\":\"write to a file\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "Found the following results for script 'fs.writeFile'\nNamespace: fs.writeFile\nArguments: { path: string, data: string, encoding: string }\nDescription: Writes data to a file, replacing the file if it already exists.\n--------------\nNamespace: math.sin\nArguments: { angle: number }\nDescription: Calculate the sine of a given angle in degrees\n```"
+                }
+              ]
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "executeScript",
+              "arguments": "{\n  \"namespace\": \"fs.writeFile\",\n  \"arguments\": \"{\\\"path\\\":\\\"Washington.txt\\\",\\\"data\\\":\\\"Washington\\\",\\\"encoding\\\":\\\"utf8\\\"}\",\n  \"result\": \"writeResult\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "time": "00:00:04",
+      "llmReqs": [
+        {
+          "time": "00:00:04",
+          "tokens": 212,
+          "chat": {
+            "persistent": {
+              "tokens": 136,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that executes scripts to accomplish goals.\nYou can search for new scripts using the findScript function.\nIf you can not find a script that matches your needs you can create one with the createScript function.\nYou can execute scripts using the executeScript function.\nWhen executing scripts use named arguments with TypeScript syntax.\nYou can use the executeScript function to execute agent.speak script to inform the user of anything noteworthy.\nOnce you have achieved the goal, use executeScript function to execute agent.onGoalAchieved script.\nIf you can not achieve the goal, use executeScript function to execute agent.onGoalFailed script.\n"
+                },
+                {
+                  "role": "user",
+                  "content": "Write the word 'Washington' to a .txt file"
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 76,
+              "msgs": [
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "findScript",
+                    "arguments": "{\"namespace\":\"fs.writeFile\",\"description\":\"write to a file\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "Found the following results for script 'fs.writeFile'\nNamespace: fs.writeFile\nArguments: { path: string, data: string, encoding: string }\nDescription: Writes data to a file, replacing the file if it already exists.\n--------------\nNamespace: math.sin\nArguments: { angle: number }\nDescription: Calculate the sine of a given angle in degrees\n```"
+                },
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "executeScript",
+                    "arguments": "{\"namespace\":\"fs.writeFile\",\"arguments\":\"{\\\"path\\\":\\\"Washington.txt\\\",\\\"data\\\":\\\"Washington\\\",\\\"encoding\\\":\\\"utf8\\\"}\",\"result\":\"writeResult\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "No result returned."
+                }
+              ]
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "executeScript",
+              "arguments": "{\"namespace\":\"agent.speak\",\"arguments\":\"{\\\"message\\\":\\\"The word 'Washington' has been successfully written to the file 'Washington.txt'.\\\"}\",\"result\":\"speakResult\"}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "time": "00:00:18",
+      "llmReqs": [
+        {
+          "time": "00:00:18",
+          "tokens": 262,
+          "chat": {
+            "persistent": {
+              "tokens": 136,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that executes scripts to accomplish goals.\nYou can search for new scripts using the findScript function.\nIf you can not find a script that matches your needs you can create one with the createScript function.\nYou can execute scripts using the executeScript function.\nWhen executing scripts use named arguments with TypeScript syntax.\nYou can use the executeScript function to execute agent.speak script to inform the user of anything noteworthy.\nOnce you have achieved the goal, use executeScript function to execute agent.onGoalAchieved script.\nIf you can not achieve the goal, use executeScript function to execute agent.onGoalFailed script.\n"
+                },
+                {
+                  "role": "user",
+                  "content": "Write the word 'Washington' to a .txt file"
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 126,
+              "msgs": [
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "findScript",
+                    "arguments": "{\"namespace\":\"fs.writeFile\",\"description\":\"write to a file\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "Found the following results for script 'fs.writeFile'\nNamespace: fs.writeFile\nArguments: { path: string, data: string, encoding: string }\nDescription: Writes data to a file, replacing the file if it already exists.\n--------------\nNamespace: math.sin\nArguments: { angle: number }\nDescription: Calculate the sine of a given angle in degrees\n```"
+                },
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "executeScript",
+                    "arguments": "{\"namespace\":\"fs.writeFile\",\"arguments\":\"{\\\"path\\\":\\\"Washington.txt\\\",\\\"data\\\":\\\"Washington\\\",\\\"encoding\\\":\\\"utf8\\\"}\",\"result\":\"writeResult\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "No result returned."
+                },
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "executeScript",
+                    "arguments": "{\"namespace\":\"agent.speak\",\"arguments\":\"{\\\"message\\\":\\\"The word 'Washington' has been successfully written to the file 'Washington.txt'.\\\"}\",\"result\":\"speakResult\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "JSON result: \n```\nUser has been informed! If you think you've achieved the goal, execute onGoalAchieved.\nIf you think you've failed, execute onGoalFailed.\n```\nResult stored in variable: {{speakResult}}"
+                }
+              ]
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "executeScript",
+              "arguments": "{\"namespace\":\"agent.onGoalAchieved\",\"arguments\":\"{}\",\"result\":\"goalResult\"}"
+            }
+          }
+        }
+      ],
+      "message": {
+        "type": "success",
+        "title": "Executed 'agent.onGoalAchieved' script.",
+        "content": "## Function Call:\n```javascript\nexecuteScript({\n  \"namespace\": \"agent.onGoalAchieved\",\n  \"arguments\": \"{}\",\n  \"result\": \"goalResult\"\n})\n```\n## Result\n```\nJSON result: \n```\ntrue\n```\nResult stored in variable: {{goalResult}}\n```"
+      }
+    }
+  ]
+}

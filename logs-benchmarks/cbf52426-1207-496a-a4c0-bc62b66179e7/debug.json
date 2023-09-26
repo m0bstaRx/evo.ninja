@@ -1,0 +1,352 @@
+{
+  "goal": {
+    "prompt": "Write tesla's revenue every year since its creation into a .txt file. Use the US notation, with a precision rounded to the nearest million dollars (for instance, $31,578 billion).",
+    "time": "00:01:50",
+    "tokens": 2037,
+    "llmReqs": 7
+  },
+  "steps": [
+    {
+      "time": "00:00:21",
+      "llmReqs": [
+        {
+          "time": "00:00:21",
+          "tokens": 165,
+          "chat": {
+            "persistent": {
+              "tokens": 165,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that executes scripts to accomplish goals.\nYou can search for new scripts using the findScript function.\nIf you can not find a script that matches your needs you can create one with the createScript function.\nYou can execute scripts using the executeScript function.\nWhen executing scripts use named arguments with TypeScript syntax.\nYou can use the executeScript function to execute agent.speak script to inform the user of anything noteworthy.\nOnce you have achieved the goal, use executeScript function to execute agent.onGoalAchieved script.\nIf you can not achieve the goal, use executeScript function to execute agent.onGoalFailed script.\n"
+                },
+                {
+                  "role": "user",
+                  "content": "Write tesla's revenue every year since its creation into a .txt file. Use the US notation, with a precision rounded to the nearest million dollars (for instance, $31,578 billion)."
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 0,
+              "msgs": []
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "findScript",
+              "arguments": "{\n  \"namespace\": \"web.scrape\",\n  \"description\": \"Tesla's annual revenue\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "time": "00:00:06",
+      "llmReqs": [
+        {
+          "time": "00:00:05",
+          "tokens": 267,
+          "chat": {
+            "persistent": {
+              "tokens": 165,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that executes scripts to accomplish goals.\nYou can search for new scripts using the findScript function.\nIf you can not find a script that matches your needs you can create one with the createScript function.\nYou can execute scripts using the executeScript function.\nWhen executing scripts use named arguments with TypeScript syntax.\nYou can use the executeScript function to execute agent.speak script to inform the user of anything noteworthy.\nOnce you have achieved the goal, use executeScript function to execute agent.onGoalAchieved script.\nIf you can not achieve the goal, use executeScript function to execute agent.onGoalFailed script.\n"
+                },
+                {
+                  "role": "user",
+                  "content": "Write tesla's revenue every year since its creation into a .txt file. Use the US notation, with a precision rounded to the nearest million dollars (for instance, $31,578 billion)."
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 102,
+              "msgs": [
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "findScript",
+                    "arguments": "{\"namespace\":\"web.scrape\",\"description\":\"Tesla's annual revenue\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "Found the following results for script 'web.scrape'\nNamespace: web.scrape\nArguments: { url: string }\nDescription: Scrape Tesla's annual revenue from the web\n--------------\nNamespace: text.parseTeslaRevenue\nArguments: { rawHtml: string }\nDescription: Parse the raw HTML to find Tesla's annual revenue\n--------------\nNamespace: finance.getCompanyRevenue\nArguments: { company: string, year: number }\nDescription: This script gets the annual revenue of a specified company for a specified year.\n```"
+                }
+              ]
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "executeScript",
+              "arguments": "{\n  \"namespace\": \"finance.getCompanyRevenue\",\n  \"arguments\": \"{\\\"company\\\": \\\"Tesla\\\"}\",\n  \"result\": \"revenueData\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "time": "00:00:18",
+      "llmReqs": [
+        {
+          "time": "00:00:18",
+          "tokens": 289,
+          "chat": {
+            "persistent": {
+              "tokens": 165,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that executes scripts to accomplish goals.\nYou can search for new scripts using the findScript function.\nIf you can not find a script that matches your needs you can create one with the createScript function.\nYou can execute scripts using the executeScript function.\nWhen executing scripts use named arguments with TypeScript syntax.\nYou can use the executeScript function to execute agent.speak script to inform the user of anything noteworthy.\nOnce you have achieved the goal, use executeScript function to execute agent.onGoalAchieved script.\nIf you can not achieve the goal, use executeScript function to execute agent.onGoalFailed script.\n"
+                },
+                {
+                  "role": "user",
+                  "content": "Write tesla's revenue every year since its creation into a .txt file. Use the US notation, with a precision rounded to the nearest million dollars (for instance, $31,578 billion)."
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 124,
+              "msgs": [
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "findScript",
+                    "arguments": "{\"namespace\":\"web.scrape\",\"description\":\"Tesla's annual revenue\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "Found the following results for script 'web.scrape'\nNamespace: web.scrape\nArguments: { url: string }\nDescription: Scrape Tesla's annual revenue from the web\n--------------\nNamespace: text.parseTeslaRevenue\nArguments: { rawHtml: string }\nDescription: Parse the raw HTML to find Tesla's annual revenue\n--------------\nNamespace: finance.getCompanyRevenue\nArguments: { company: string, year: number }\nDescription: This script gets the annual revenue of a specified company for a specified year.\n```"
+                },
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "executeScript",
+                    "arguments": "{\"namespace\":\"finance.getCompanyRevenue\",\"arguments\":\"{\\\"company\\\": \\\"Tesla\\\"}\",\"result\":\"revenueData\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "JSON result: \n```\n[object Object]\n```\nResult stored in variable: {{revenueData}}"
+                }
+              ]
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "findScript",
+              "arguments": "{\"namespace\":\"text.formatCurrency\",\"description\":\"Format number to US currency notation\"}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "time": "00:01:04",
+      "llmReqs": [
+        {
+          "time": "00:00:05",
+          "tokens": 305,
+          "chat": {
+            "persistent": {
+              "tokens": 165,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that executes scripts to accomplish goals.\nYou can search for new scripts using the findScript function.\nIf you can not find a script that matches your needs you can create one with the createScript function.\nYou can execute scripts using the executeScript function.\nWhen executing scripts use named arguments with TypeScript syntax.\nYou can use the executeScript function to execute agent.speak script to inform the user of anything noteworthy.\nOnce you have achieved the goal, use executeScript function to execute agent.onGoalAchieved script.\nIf you can not achieve the goal, use executeScript function to execute agent.onGoalFailed script.\n"
+                },
+                {
+                  "role": "user",
+                  "content": "Write tesla's revenue every year since its creation into a .txt file. Use the US notation, with a precision rounded to the nearest million dollars (for instance, $31,578 billion)."
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 140,
+              "msgs": [
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "findScript",
+                    "arguments": "{\"namespace\":\"web.scrape\",\"description\":\"Tesla's annual revenue\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "Found the following results for script 'web.scrape'\nNamespace: web.scrape\nArguments: { url: string }\nDescription: Scrape Tesla's annual revenue from the web\n--------------\nNamespace: text.parseTeslaRevenue\nArguments: { rawHtml: string }\nDescription: Parse the raw HTML to find Tesla's annual revenue\n--------------\nNamespace: finance.getCompanyRevenue\nArguments: { company: string, year: number }\nDescription: This script gets the annual revenue of a specified company for a specified year.\n```"
+                },
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "executeScript",
+                    "arguments": "{\"namespace\":\"finance.getCompanyRevenue\",\"arguments\":\"{\\\"company\\\": \\\"Tesla\\\"}\",\"result\":\"revenueData\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "JSON result: \n```\n[object Object]\n```\nResult stored in variable: {{revenueData}}"
+                },
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "findScript",
+                    "arguments": "{\"namespace\":\"text.formatCurrency\",\"description\":\"Format number to US currency notation\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "Found no results for script 'text.formatCurrency'. Try creating the script instead."
+                }
+              ]
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "createScript",
+              "arguments": "{\n\"namespace\": \"text.formatCurrency\",\n\"description\": \"Format a number to US currency notation with a precision rounded to the nearest million dollars\",\n\"arguments\": \"{ amount: number }\"\n}"
+            }
+          }
+        },
+        {
+          "time": "00:00:29",
+          "tokens": 230,
+          "chat": {
+            "persistent": {
+              "tokens": 230,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that writes JavaScript functions.\nBefore writing any code think step by step about what you want to implement.\nCall the writeFunction function to submit the code of your JavaScript function.\nIf the first try doesn't succeed, try again. Do not create mock functionality.\n"
+                },
+                {
+                  "role": "system",
+                  "content": "Your task is to write the body of an async JavaScript function.\nFunction namepace: \"text.formatCurrency\"\nArguments: { amount: number }.\nDescription: \"Format a number to US currency notation with a precision rounded to the nearest million dollars\"\nYou must refer to function arguments as if they were locally defined variables, remember you're writing just the body of the function.\nUse only the function arguments above, do not add new ones.\nSince you are writing the body of the function, remember to use the return keyword if needed.\nWhen using libraries, use the require function to import them.\nDo not require libraries aside from 'fs' and 'axios'\nDo not use external APIs that require authentication or an API key.\nDo not recursively call the \"text.formatCurrency\" function.\nExample function body:\nconst fs = require('fs');\nreturn fs.readFileSync(path, encoding);\n"
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 0,
+              "msgs": []
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "think",
+              "arguments": "{\n  \"thoughts\": \"I need to write a function that takes a number as an input and formats it to US currency notation with a precision rounded to the nearest million dollars. I can use the built-in JavaScript method toLocaleString to format the number to US currency notation. I will also need to round the number to the nearest million before formatting it. I don't need to require any libraries for this task.\"\n}"
+            }
+          }
+        },
+        {
+          "time": "00:00:14",
+          "tokens": 314,
+          "chat": {
+            "persistent": {
+              "tokens": 230,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that writes JavaScript functions.\nBefore writing any code think step by step about what you want to implement.\nCall the writeFunction function to submit the code of your JavaScript function.\nIf the first try doesn't succeed, try again. Do not create mock functionality.\n"
+                },
+                {
+                  "role": "system",
+                  "content": "Your task is to write the body of an async JavaScript function.\nFunction namepace: \"text.formatCurrency\"\nArguments: { amount: number }.\nDescription: \"Format a number to US currency notation with a precision rounded to the nearest million dollars\"\nYou must refer to function arguments as if they were locally defined variables, remember you're writing just the body of the function.\nUse only the function arguments above, do not add new ones.\nSince you are writing the body of the function, remember to use the return keyword if needed.\nWhen using libraries, use the require function to import them.\nDo not require libraries aside from 'fs' and 'axios'\nDo not use external APIs that require authentication or an API key.\nDo not recursively call the \"text.formatCurrency\" function.\nExample function body:\nconst fs = require('fs');\nreturn fs.readFileSync(path, encoding);\n"
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 84,
+              "msgs": [
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "think",
+                    "arguments": "{\"thoughts\":\"I need to write a function that takes a number as an input and formats it to US currency notation with a precision rounded to the nearest million dollars. I can use the built-in JavaScript method toLocaleString to format the number to US currency notation. I will also need to round the number to the nearest million before formatting it. I don't need to require any libraries for this task.\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "Thoughts:\n```\nI need to write a function that takes a number as an input and formats it to US currency notation with a precision rounded to the nearest million dollars. I can use the built-in JavaScript method toLocaleString to format the number to US currency notation. I will also need to round the number to the nearest million before formatting it. I don't need to require any libraries for this task.\n```"
+                }
+              ]
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "writeFunction",
+              "arguments": "{\n\"namespace\": \"text.formatCurrency\",\n\"description\": \"Format a number to US currency notation with a precision rounded to the nearest million dollars\",\n\"arguments\": \"{ amount: number }\",\n\"code\": \"\n// Round the amount to the nearest million\nlet roundedAmount = Math.round(amount / 1000000) * 1000000;\n\n// Format the rounded amount to US currency notation\nlet formattedAmount = roundedAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' });\n\nreturn formattedAmount;\n\"\n}"
+            }
+          }
+        },
+        {
+          "time": "00:00:15",
+          "tokens": 467,
+          "chat": {
+            "persistent": {
+              "tokens": 230,
+              "msgs": [
+                {
+                  "role": "system",
+                  "content": "You are an agent that writes JavaScript functions.\nBefore writing any code think step by step about what you want to implement.\nCall the writeFunction function to submit the code of your JavaScript function.\nIf the first try doesn't succeed, try again. Do not create mock functionality.\n"
+                },
+                {
+                  "role": "system",
+                  "content": "Your task is to write the body of an async JavaScript function.\nFunction namepace: \"text.formatCurrency\"\nArguments: { amount: number }.\nDescription: \"Format a number to US currency notation with a precision rounded to the nearest million dollars\"\nYou must refer to function arguments as if they were locally defined variables, remember you're writing just the body of the function.\nUse only the function arguments above, do not add new ones.\nSince you are writing the body of the function, remember to use the return keyword if needed.\nWhen using libraries, use the require function to import them.\nDo not require libraries aside from 'fs' and 'axios'\nDo not use external APIs that require authentication or an API key.\nDo not recursively call the \"text.formatCurrency\" function.\nExample function body:\nconst fs = require('fs');\nreturn fs.readFileSync(path, encoding);\n"
+                }
+              ]
+            },
+            "temporary": {
+              "tokens": 237,
+              "msgs": [
+                {
+                  "role": "assistant",
+                  "content": "",
+                  "function_call": {
+                    "name": "think",
+                    "arguments": "{\"thoughts\":\"I need to write a function that takes a number as an input and formats it to US currency notation with a precision rounded to the nearest million dollars. I can use the built-in JavaScript method toLocaleString to format the number to US currency notation. I will also need to round the number to the nearest million before formatting it. I don't need to require any libraries for this task.\"}"
+                  }
+                },
+                {
+                  "role": "system",
+                  "content": "Thoughts:\n```\nI need to write a function that takes a number as an input and formats it to US currency notation with a precision rounded to the nearest million dollars. I can use the built-in JavaScript method toLocaleString to format the number to US currency notation. I will also need to round the number to the nearest million before formatting it. I don't need to require any libraries for this task.\n```"
+                },
+                {
+                  "role": "system",
+                  "content": "Could not parse JSON arguments for function: writeFunction. Error: SyntaxError: JSON5: invalid character '\\n' at 6:0\nJSON Arguments:\n```\n{\n\"namespace\": \"text.formatCurrency\",\n\"description\": \"Format a number to US currency notation with a precision rounded to the nearest million dollars\",\n\"arguments\": \"{ amount: number }\",\n\"code\": \"\n// Round the amount to the nearest million\nlet roundedAmount = Math.round(amount / 1000000) * 1000000;\n\n// Format the rounded amount to US currency notation\nlet formattedAmount = roundedAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' });\n\nreturn formattedAmount;\n\"\n}\n```\nTry using different arguments instead."
+                }
+              ]
+            }
+          },
+          "response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+              "name": "writeFunction",
+              "arguments": "{\n\"namespace\": \"text.formatCurrency\",\n\"description\": \"Format a number to US currency notation with a precision rounded to the nearest million dollars\",\n\"arguments\": \"{ amount: number }\",\n\"code\": \"// Round the amount to the nearest million\\nlet roundedAmount = Math.round(amount / 1000000) * 1000000;\\n\\n// Format the rounded amount to US currency notation\\nlet formattedAmount = roundedAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' });\\n\\nreturn formattedAmount;\\n\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
