@@ -72,7 +72,7 @@ jobs:
     - name: Get test name if provided
       id: get-name
       run: |
-        TEST_NAME=$(echo "${{ github.event.comment.body }}" | grep -oP '(?<=/workflows/benchmarks\s)\w+')
+        TEST_NAME=$(echo "${{ github.event.comment.body }}" | grep -oP '/workflows/benchmarks\s?(\w+)' | grep -oP '\w+$')
         echo "TEST_NAME=$TEST_NAME" >> "$GITHUB_OUTPUT"
 
     - name: Run benchmarks
@@ -83,7 +83,7 @@ jobs:
           poetry run agbenchmark --cutoff 300 --test=${{ steps.get-name.outputs.TEST_NAME }}
         else
           echo "Running benchmarks with default settings"
-          poetry run agbenchmark --cutoff 300
+          poetry run agbenchmark --cutoff 300 --no_dep
         fi
 
     - name: Upload artifact
