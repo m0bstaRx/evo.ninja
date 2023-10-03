@@ -1,0 +1,7 @@
+{
+  "name": "webScraper.getText",
+  "description": "Open a web page, scrapes it looking for specific text and returns a stringified JSON with the best results",
+  "arguments": "{ textToFuzzySearch: string[], url: string }",
+  "code": "./webScraper.getText.js"
+}
+
