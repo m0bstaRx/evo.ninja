@@ -1,0 +1,6 @@
+{
+  "name": "fs.searchFilesByContent",
+  "description": "Searches through text-based files (e.g., .txt, .csv) to identify those that contain the keyword and returns a list of their filepaths.",
+  "arguments": "{ keyword: string }",
+  "code": "./fs.searchFilesByContent.js"
+}

@@ -1,6 +1,6 @@
-// language=javascript
 import { dateShim } from "./Date";
 
+// language=javascript
 export const packagesShim =
 `
 ${dateShim}
@@ -177,6 +177,9 @@ function require(lib) {
     },
     basename: (path) => {
       return __wrap_subinvoke("plugin/path", "basename", clean({ path, ext })).value
+    },
+    extname: (path) => {
+      return __wrap_subinvoke("plugin/path", "extname", clean({ path })).value
     },
     format: (pathObject) => {
       return __wrap_subinvoke("plugin/path", "format", clean({ pathObject })).value

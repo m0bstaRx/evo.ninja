@@ -167,9 +167,7 @@ export class WrapClient extends PolywrapClient {
         "toUTCString": async (args: any) => new Date(args.timestamp).toUTCString(),
       })))
       .setPackage("plugin/path", PluginPackage.from(module => ({
-        "resolve": (args: any) => {
-          return path.resolve("/", args.pathSegments)
-        },
+        "resolve": (args: any) => path.resolve("/", args.pathSegments),
         "normalize": (args: any) => path.normalize(args.path),
         "isAbsolute": (args: any) => path.isAbsolute(args.path),
         "join": (args: any) => path.join(args.paths),
