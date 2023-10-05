@@ -228,6 +228,9 @@ export class WrapClient extends PolywrapClient {
           return JSON.stringify(result)
         }
       })))
+      .setPackage("plugin/process", PluginPackage.from(module => ({
+        "cwd": async (args: any) => process.cwd(),
+      })))
 
     if (agentPlugin) {
       builder
