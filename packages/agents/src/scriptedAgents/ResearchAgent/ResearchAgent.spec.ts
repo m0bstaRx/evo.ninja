@@ -104,6 +104,40 @@ describe('Research Agent Test Suite', () => {
     }
   }
 
+  test("search", async () => {
+    const { agent, debugLog } = createResearchAgent("search");
+    const response = await runResearchAgent(
+      agent,
+      "Open 'https://silennaihin.com/random/plain.html' and paste all of the text on the page in a .txt file",
+      debugLog
+    );
+
+    expect(response.value.ok).toBe(true);
+    const generatedFiles = agent.workspace
+      .readdirSync("./")
+      .filter((f) => f.toLowerCase().includes(".txt"));
+    const text = agent.workspace.readFileSync(generatedFiles[0]);
+    expect(text).toBeTruthy();
+    expect(text).toContain("This is a Heading This is a paragraph.");
+  });
+
+  test("book price", async () => {
+    const { agent, debugLog } = createResearchAgent("book-price");
+    const response = await runResearchAgent(
+      agent,
+      "Write the price of the book in this url 'http://books.toscrape.com/catalogue/meditations_33/index.html' to a .txt file.",
+      debugLog
+    );
+
+    expect(response.value.ok).toBe(true);
+    const generatedFiles = agent.workspace
+      .readdirSync("./")
+      .filter((f) => f.toLowerCase().includes(".txt"));
+    const bookPrice = agent.workspace.readFileSync(generatedFiles[0]);
+    expect(bookPrice).toBeTruthy();
+    expect(bookPrice).toContain("25.89");
+  });
+
   test("revenue-retrieval", async () => {
     const { agent, debugLog } = createResearchAgent("revenue-retrieval");
     const response = await runResearchAgent(
