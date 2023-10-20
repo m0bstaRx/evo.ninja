@@ -45,6 +45,20 @@ export class AgentBaseContext {
       new AgentVariables()
     );
   }
+
+
+  cloneWithVariables(): AgentBaseContext {
+    return new AgentBaseContext(
+      this.llm,
+      this.chat.cloneEmpty(),
+      this.logger,
+      this.workspace,
+      this.env,
+      this.scripts,
+      this.client,
+      this.variables
+    );
+  }
 }
 
 export interface AgentPrompts<TRunArgs> {

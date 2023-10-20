@@ -19,6 +19,7 @@ import { ResultErr } from "@polywrap/result";
 import { VerifyGoalAchievedFunction } from "../../functions/VerifyGoalAchieved";
 import { prompts } from "./prompts";
 import { ScripterAgent } from "../Scripter";
+import { SetVariableFunction } from "../../functions/SetVariable";
 
 export interface EvoRunArgs {
   goal: string
@@ -33,19 +34,21 @@ export class Evo extends AgentBase<EvoRunArgs, AgentBaseContext> {
     const onGoalAchievedFn = new OnGoalAchievedFunction(context.scripts);
     const onGoalFailedFn = new OnGoalFailedFunction(context.scripts);
     const verifyGoalAchievedFn = new VerifyGoalAchievedFunction(context.llm, context.chat.tokenizer);
+    const setVariableFn = new SetVariableFunction()
 
     delegatedAgents = delegatedAgents ?? [
         DeveloperAgent,
         ResearcherAgent,
         DataAnalystAgent,
         ScripterAgent
-      ].map(agentClass => () => new agentClass(context.cloneEmpty()));
+      ].map(agentClass => () => new agentClass(context.cloneWithVariables()));
 
     super(
       {
         functions: [
           onGoalAchievedFn,
           onGoalFailedFn,
+          setVariableFn,
           ...delegatedAgents.map((x) => new DelegateAgentFunction(x, context.llm, context.chat.tokenizer)),
         ],
         shouldTerminate: (functionCalled) => {
@@ -53,7 +56,7 @@ export class Evo extends AgentBase<EvoRunArgs, AgentBaseContext> {
             functionCalled.name
           );
         },
-        prompts: prompts(verifyGoalAchievedFn, onGoalFailedFn),
+        prompts: prompts(verifyGoalAchievedFn, onGoalFailedFn, setVariableFn),
         timeout
       },
       context
